@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
-import { getDB } from "../db/mongo";
+import { getDB } from "../db/mongo.js";
+import { ObjectId } from "mongodb";
 
 export async function loginUser(agentCode, password) {
     const db = getDB()
-    const usersCollection  = db.collecion("users")
+    const usersCollection  = db.collection("users")
 
     const user = await usersCollection.findOne({ agentCode })
 
@@ -36,4 +37,25 @@ export async function loginUser(agentCode, password) {
         createAt: user.createAt
     }
   }
+}
+
+export async function getCurrentUser(userId) {
+    const db = getDB()
+    const usersCollection = db.collection("users")
+
+    const user = await usersCollection.findOne(
+        {_id: new ObjectId(userId)},
+        {projection: {passwordHash: 0}}
+    )
+    if(!user){
+        throw new Error("User not found")
+    }
+
+    return {
+        id: user._id.toString(),
+        agentCode: user.agentCode,
+        fullName: user.fullName,
+        role: user.role,
+        createAt: user.createAt
+    }
 }
