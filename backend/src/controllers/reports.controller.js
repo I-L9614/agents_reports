@@ -1,8 +1,9 @@
-import { createReport, getReports, getReportById } from "../services/reports.service.js";
+import { createReport, getReports, getReportById, deleteReport } from "../services/reports.service.js";
 
 export async function createNewReport(req, res) {
     try {
-        const { category, urgency, message, imagePath, sourceType } = req.Body
+        const { category, urgency, message, sourceType } = req.Body
+        const imagePath = req.file ? `/uploads/${req.file.fileName}` : null
 
         if (!category || !urgency || !message) {
             return res.status(400).json({
@@ -15,7 +16,7 @@ export async function createNewReport(req, res) {
             category,
             urgency,
             message,
-            imagePath: imagePath || null,
+            imagePath,
             sourceType: sourceType || "manual"
         })
 
@@ -55,6 +56,20 @@ export async function getSingleReport(req,res) {
         const statusCode = 
         TokenExpiredError.message === "Report not fount" ? 404 : error.message === "Forbidden" ? 403 : 500
         res.status(statusCode).json({
+            message: error.message
+        })
+    }
+}
+
+export async function removeReport(req,res) {
+    try {
+        await deleteReport(req.params.id, req.user)
+
+        res.json({
+            message: "Report deleted"
+        })
+    } catch(error) {
+        res.status(400).json({
             message: error.message
         })
     }

@@ -41,7 +41,7 @@ export async function getReports({ currentUser, filters = {} }) {
     const reportsCollection = db.collection("reports")
 
     const query = {}
-    if (currentUser.role === "agent"){
+    if (currentUser.role === "agent") {
         query.userId = new ObjectId(currentUser.id)
     }
 
@@ -52,7 +52,7 @@ export async function getReports({ currentUser, filters = {} }) {
         query.urgency = filters.urgency
     }
 
-    const reports = await reportsCollection.find(query).sort({createAt: -1}).toArray()
+    const reports = await reportsCollection.find(query).sort({ createAt: -1 }).toArray()
 
     return reports.map((report) => ({
         id: report._id.toString(),
@@ -91,5 +91,40 @@ export async function getReportById(reportId, currentUser) {
         imagePath: report.imagePath,
         sourceType: report.sourceType,
         createAt: report.createAt
+    }
+}
+
+export async function deleteReport(reportId, currentUser) {
+    const db = getDB()
+    const reportsCollection = db.collection("reports")
+
+    const report = await reportsCollection.findOne({
+        _id: new ObjectId(reportId)
+    })
+
+    if (!report) {
+        throw new Error("Report not found")
+    }
+
+    if (
+        currentUser.role === "agent" &&
+        report.userId.toString() !== currentUser.id
+    ) {
+        throw new Error("Forbidden")
+    }
+    await reportsCollection.deleteOne({
+        _id: new ObjectId(reportId)
+    })
+    return true
+}
+
+export async function getMyReports(req, res) {
+    try {
+        const db = getDB()
+        const reports = await db.collection("reports").find({ userId: req.user.id }).toArray()
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching reports"
+        })
     }
 }

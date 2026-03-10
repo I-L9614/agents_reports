@@ -3,6 +3,7 @@ import cors from 'cors'
 import authRouths from "./routes/auth.routes.js"
 import usersRoutes from './routes/users.routes.js'
 import reportsRoutes from './routes/reports.routes.js'
+import dashboardRoutes from './routes/dashboard.routes.js'
 
 const app = express()
 
@@ -17,5 +18,6 @@ app.get('/', (req,res) => {
 app.use('/auth', authRouths)
 app.use('/users', usersRoutes)
 app.use('/reports', reportsRoutes)
+app.use('/dashboard', dashboardRoutes)
 
 export default app
