@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 import { getDB } from "../db/mongo.js";
-import { urlencoded } from "express";
 
 export async function createReport({
     userId,
@@ -12,6 +11,22 @@ export async function createReport({
 }) {
     const db = getDB()
     const reportsCollection = db.collection('reports')
+    if (!category || !urgency || !message) {
+        throw new Error("Missing required Field")
+        }
+    }
+
+    const validUrgency = ["low", "medium", "high"]
+    const validCategory = ["intelligence", "logistics", "alert"]
+
+    if (!validUrgency.includes(urgency)){
+        return res.status(400).json({message: "Invalid urgency"})
+    }
+
+    if (!validCategory.includes(category)) {
+        return res.status(400).json({message: "Invalid category"})
+    }
+
     const report = {
         userId: new ObjectId(userId),
         category,
@@ -19,7 +34,7 @@ export async function createReport({
         message,
         imagePath,
         sourceType,
-        createAt: new Date()
+        createdAt: new Date()
     }
 
     const result = await reportsCollection.insertOne(report)
@@ -32,9 +47,9 @@ export async function createReport({
         message: report.message,
         imagePath: report.imagePath,
         sourceType: report.sourceType,
-        createAt: report.createAt
-    }
+        createdAt: report.createdAt
 }
+
 
 export async function getReports({ currentUser, filters = {} }) {
     const db = getDB()
@@ -56,13 +71,13 @@ export async function getReports({ currentUser, filters = {} }) {
 
     return reports.map((report) => ({
         id: report._id.toString(),
-        iserId: report.userId.toString(),
+        userId: report.userId.toString(),
         category: report.category,
         urgency: report.urgency,
         message: report.message,
         imagePath: report.imagePath,
         sourceType: report.sourceType,
-        createAt: report.createAt
+        createdAt: report.createdAt
     }))
 }
 
@@ -90,7 +105,7 @@ export async function getReportById(reportId, currentUser) {
         message: report.message,
         imagePath: report.imagePath,
         sourceType: report.sourceType,
-        createAt: report.createAt
+        createdAt: report.createdAt
     }
 }
 
@@ -121,7 +136,7 @@ export async function deleteReport(reportId, currentUser) {
 export async function getMyReports(req, res) {
     try {
         const db = getDB()
-        const reports = await db.collection("reports").find({ userId: req.user.id }).toArray()
+        const reports = await db.collection("reports").find({ userId: new ObjectId(req.user.id) }).toArray()
     } catch (error) {
         res.status(500).json({
             message: "Error fetching reports"

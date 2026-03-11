@@ -29,7 +29,12 @@ export default function NewReport() {
     return (
         <div>
             <h2>New Report</h2>
-            <input placeholder="Category" value={category} onChange={(e) => e.target.value} />
+            <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="">Select Category</option>
+                <option value="intelligence">Intelligence</option>
+                <option value="logistics">Logistics</option>
+                <option value="alert">Alert</option>
+            </select>
             <br />
             <select value={urgency} onChange={(e) => e.target.value}>
                 <option value="low">Low</option>
