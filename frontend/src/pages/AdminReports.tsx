@@ -1,6 +1,6 @@
 import { useEffect,useState } from "react";
 import api from "../api/axios";
-import { Report } from "../types/types";
+import { type Report } from "../types/types.ts";
 
 export default function AdminReports() {
     const [ reports, setReports ] = useState<Report[]>([])
@@ -21,7 +21,7 @@ export default function AdminReports() {
 
             {
                 reports.map(r => (
-                    <div key={r._id}>
+                    <div key={r.id}>
                         <b>{r.category}</b>
                         <p>{r.message}</p>
                         <small>Urgency: {r.urgency}</small>

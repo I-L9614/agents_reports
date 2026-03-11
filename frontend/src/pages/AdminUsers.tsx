@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { User } from "../types/types";
+import { type User } from "../types/types.ts";
 
 export default function AdminUsers() {
     const [users, setUsers] = useState<User[]>([])

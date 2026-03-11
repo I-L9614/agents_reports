@@ -1,10 +1,11 @@
-import { createReport, getReports, getReportById, deleteReport } from "../services/reports.service.js";
+import { createReport, getReports, getReportById, deleteReport,getMyReports as getMyReportsService } from "../services/reports.service.js";
+import { ObjectId } from "mongodb";
+
 
 export async function createNewReport(req, res) {
     try {
-        const { category, urgency, message, sourceType } = req.Body
-        const imagePath = req.file ? `/uploads/${req.file.fileName}` : null
-
+        const { category, urgency, message, sourceType } = req.body
+        const imagePath = req.file ? `/uploads/${req.file.filename}` : null
         if (!category || !urgency || !message) {
             return res.status(400).json({
                 message: "Category, argency and message are required"
@@ -51,14 +52,15 @@ export async function getSingleReport(req,res) {
     try {
         const report = await getReportById(req.params.id, req.user)
 
-        res.staus(200).json({ report })
+        res.status(200).json({ report })
     } catch (error) {
-        const statusCode = 
-        TokenExpiredError.message === "Report not fount" ? 404 : error.message === "Forbidden" ? 403 : 500
-        res.status(statusCode).json({
-            message: error.message
-        })
-    }
+    console.error("Error in getSingleReport:", error);
+    res.status(500).json({ 
+        message: "Internal server error",
+        error: error.message 
+    });
+}
+
 }
 
 export async function removeReport(req,res) {
@@ -72,5 +74,17 @@ export async function removeReport(req,res) {
         res.status(400).json({
             message: error.message
         })
+    }
+}
+
+export async function getMyReports(req, res) {
+    try {
+        const reports = await getMyReportsService(req.user.id);
+        res.status(200).json({ reports });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching your reports",
+            error: error.message
+        });
     }
 }

@@ -21,7 +21,6 @@ export default function Login() {
             localStorage.setItem("token", res.data.token)
 
             setToken(res.data.token)
-
             navigate("/dashboard")
         } catch(error) {
             alert("Login failed")

@@ -6,11 +6,11 @@ export interface User {
 }
 
 export interface Report {
-    _id: string,
+    id: string,
     category: string,
     urgency: string,
     message: string,
     imagePath: string,
     sourceType: string,
-    createAt: string
+    createdAt: string
 }

@@ -1,6 +1,6 @@
 import { useEffect,useState } from "react";
 import api from "../api/axios";
-import { Report } from "../types/types";
+import { type Report } from "../types/types.ts";
 
 export default function MyReports() {
     const [ reports, setReports] = useState<Report[]>([])
@@ -8,7 +8,7 @@ export default function MyReports() {
         const fetchReport = async () => {
             const res = await api.get("/reports/my")
 
-            setReports(res.data)
+            setReports(res.data.reports)
         }
         fetchReport()
     },[])
@@ -29,11 +29,11 @@ export default function MyReports() {
 
                 <tbody>
                     {reports.map((r) => (
-                        <tr key={r._id}>
+                        <tr key={r.id}>
                             <td>{r.category}</td>
                             <td>{r.urgency}</td>
                             <td>{r.message}</td>
-                            <td>{new Date(r.createAt).toLocaleString()}</td>
+                            <td>{new Date(r.createdAt).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>

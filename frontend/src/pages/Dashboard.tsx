@@ -6,7 +6,7 @@ export default function Dashboard() {
             <h2>Agent Dashboard</h2>
 
             <Link to="/new-report">New Report</Link><br />
-            <Link to={"/ypload-csv"}>Upload CSV</Link><br />
+            <Link to={"/upload-csv"}>Upload CSV</Link><br />
             <Link to="/my-reports">My Reports</Link>
         </div>
     )

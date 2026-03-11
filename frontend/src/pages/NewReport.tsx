@@ -2,13 +2,13 @@ import { useState } from "react";
 import api from "../api/axios";
 
 export default function NewReport() {
-    const [category, setCategory] = useState("")
-    const [urgency, setUrgency] = useState("")
+    const [category, setCategory] = useState("intelligence");
+    const [urgency, setUrgency] = useState("low");
     const [message, setMessage] = useState("")
     const [image, setImage] = useState<File | null>(null)
 
     const submit = async () => {
-        const formData = new FormDate()
+        const formData = new FormData()
 
         formData.append("category", category)
         formData.append("urgency", urgency)
@@ -17,9 +17,13 @@ export default function NewReport() {
         if (image) {
             formData.append("image", image)
         }
-        
+        console.log(formData)
         try {
-            await api.post("/reports", formData)
+            await api.post("/reports", formData, {
+    headers: {
+        "Content-Type": "multipart/form-data",
+    },
+})
             alert("Report Created")
         } catch{
             alert("Error")
@@ -36,13 +40,13 @@ export default function NewReport() {
                 <option value="alert">Alert</option>
             </select>
             <br />
-            <select value={urgency} onChange={(e) => e.target.value}>
+            <select value={urgency} onChange={(e) => setUrgency(e.target.value)}>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
             <br />
-            <textarea placeholder="Message" value={message} onChange={(e) => e.target.value}/>
+            <textarea placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)}/>
             <br />
             <input type="file" onChange={(e) => setImage(e.target.files?.[0] || null)}/>
             <br />

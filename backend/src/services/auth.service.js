@@ -12,13 +12,13 @@ export async function loginUser(agentCode, password) {
     if(!user) {
         throw new Error("Invalid credentials")
     }
+    console.log(user)
+    const isPasswordValid = await bcrypt.compare(password.trim(), user.passwordHash)
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash)
-
+    console.log(password)
     if (!isPasswordValid) {
         throw new Error("Invalid credentials")
     }
-
     const token = jwt.sign({
         id: user._id.toString(),
         agentCode: user.agentCodee,
