@@ -11,59 +11,59 @@ export default function Login() {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        e.stopPropagation();
-
-        console.log("1. Login process started");
-
         try {
             const res = await api.post("/auth/login", {
                 agentCode: agentCode.trim(),
                 password: password.trim()
             });
 
-            console.log("2. Server response received");
-
             if (res.data && res.data.token) {
                 const { token, user } = res.data;
-
                 localStorage.setItem("token", token);
                 localStorage.setItem("user", JSON.stringify(user));
-
                 setToken(token);
                 setUser(user);
-
-                console.log("3. Moving to redirect logic...");
 
                 const target = user.role === 'admin' ? "/admin-dashboard" : "/agent-dashboard";
                 navigate(target);
             }
         } catch (error: any) {
             console.error("Login failed:", error.response?.data || error.message);
-            alert("התחברות נכשלה: " + (error.response?.data?.message || "בדוק פרטי התחברות"));
+            alert("Login failed: " + (error.response?.data?.message || "Please check your credentials"));
         }
     };
 
     return (
-        <div style={{ padding: "20px" }}>
+        <div className="login-page-wrapper">
+
+        <div className="login-container">
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
-                <input 
-                    placeholder="Agent Code" 
-                    value={agentCode} 
-                    onChange={(e) => setAgentCode(e.target.value)} 
-                    required 
-                />
-                <br /><br />
-                <input 
-                    type="password" 
-                    placeholder="Password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                />
-                <br /><br />
-                <button type="submit">Login</button>
+                <div className="form-group" style={{ textAlign: 'left', direction: 'ltr' }}>
+                    <label>Agent Code</label>
+                    <input 
+                        type="text"
+                        placeholder="Enter your code" 
+                        value={agentCode} 
+                        onChange={(e) => setAgentCode(e.target.value)} 
+                        required 
+                    />
+                </div>
+                <div className="form-group" style={{ textAlign: 'left', direction: 'ltr' }}>
+                    <label>Password</label>
+                    <input 
+                        type="password" 
+                        placeholder="Enter your password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        required 
+                        />
+                </div>
+                <button type="submit" className="submit-btn" style={{ width: '100%', marginTop: '1rem' }}>
+                    Login
+                </button>
             </form>
         </div>
+    </div>
     );
 }

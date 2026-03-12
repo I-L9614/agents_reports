@@ -178,3 +178,19 @@ button:disabled {
     color: white;
     border-radius: 4px;
 }
+
+
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); 
+  width: 100%;
+}
+
+.login-container {
+  margin: 0; 
+  width: 100%;
+  max-width: 400px; 
+  text-align: center;
+}

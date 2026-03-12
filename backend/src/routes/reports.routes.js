@@ -7,8 +7,8 @@ import {
     getMyReports, 
     handleCSVUpload 
 } from '../controllers/reports.controller.js';
-import { requireAuth } from '../middleware/auth.middleware.js';
-import { upload } from '../middleware/upload.middleware.js';
+import { requireAuth } from '../middlewares/auth.middleware.js';
+import { upload } from '../middlewares/upload.middleware.js';
 
 const router = express.Router();
 
